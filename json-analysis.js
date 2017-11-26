@@ -28,19 +28,19 @@ var bytes = require('bytes')
 
 var contentType = require('content-type')
 
-//
+// 引用http-errors模块,创建HTTP错误
 
 var createError = require('http-errors')
 
-//
+// 引用debug模块，传递函数模块名称，它就会返回一个修饰版本console.error给你传递调试语句
 
 var debug = require('debug')('body-parser:json')
 
-//
+// 引用read模块
 
 var read = require('../read')
 
-//
+// 引用type-is模块，推断请求内容类型
 
 var typeis = require('type-is')
 
@@ -48,7 +48,7 @@ var typeis = require('type-is')
  * Module exports.
  */
 
-// 暴露这个模块
+// 暴露json模块
 
 module.exports = json
 
@@ -64,7 +64,7 @@ module.exports = json
  *            %x0D )              ; Carriage return
  */
 
-//
+// 用正则表达式匹配字符串中第一个非空的字符
 
 var FIRST_CHAR_REGEXP = /^[\x20\x09\x0a\x0d]*(.)/ // eslint-disable-line no-control-regex
 
@@ -82,13 +82,30 @@ function json (options) {
 
   var opts = options || {}
 
+  // 设置请求的最大数据量。默认为'100kb'
+  
   var limit = typeof opts.limit !== 'number'
     ? bytes.parse(opts.limit || '100kb')
     : opts.limit
+  
+  // 设置为true时，deflate压缩数据会被解压缩；设置为true时，deflate压缩数据会被拒绝。默认为true
+  
   var inflate = opts.inflate !== false
+  
+  // 传递给JSON.parse()方法的第二个参数
+  
   var reviver = opts.reviver
+  
+  // 设置为true时，仅会解析Array和Object两种格式；设置为false会解析所有JSON.parse支持的格式。默认为true
+  
   var strict = opts.strict !== false
+  
+  // 该选项用于设置为指定MIME类型的数据使用当前解析中间件。这个选项可以是一个函数或是字符串，当是字符串是会使用type-is来查找MIMI类型；当为函数是，中间件会通过fn(req)来获取实际值。默认为application/json。
+  
   var type = opts.type || 'application/json'
+  
+  // 这个选项仅在verify(req, res, buf, encoding)时受支持
+  
   var verify = opts.verify || false
 
   if (verify !== false && typeof verify !== 'function') {
