@@ -64,14 +64,14 @@ var FIRST_CHAR_REGEXP = /^[\x20\x09\x0a\x0d]*(.)/ // eslint-disable-line no-cont
 /**
  * Create a middleware to parse JSON bodies.
  *
- * @param {object} [options]
+ * @param {object} [options]    传入一个options参数
  * @return {function}
  * @public
  */
 
 // 创建一个解析JSON体的中间件
 function json (options) {
-
+  //如果options为空则赋值空对象给opts
   var opts = options || {}
 
   // 设置请求的最大数据量。默认为'100kb'  
@@ -116,7 +116,7 @@ function json (options) {
       // TODO: maybe make this configurable or part of "strict" option
       return {}
     }
-
+    //当strict为true时进入
     if (strict) {
       
       // 获取body字符串的第一个字符      
