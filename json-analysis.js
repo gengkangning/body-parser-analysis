@@ -62,14 +62,14 @@ module.exports = json
 var FIRST_CHAR_REGEXP = /^[\x20\x09\x0a\x0d]*(.)/ // eslint-disable-line no-control-regex
 
 /**
- * Create a middleware to parse JSON bodies.
+ * Create a middleware to parse JSON bodies.    创建一个解析JSON格式的主体的中间件
  *
- * @param {object} [options]    传入一个options参数
- * @return {function}
+ * @param {object} [options]    传入一个参数options，options为对象类型，有多个属性
+ * @return {function}             返回一个函数
  * @public
  */
 
-// 创建一个解析JSON体的中间件
+// 创建一个解析JSON格式的主体的中间件
 function json (options) {
   //如果options为空则赋值空对象给opts
   var opts = options || {}
@@ -143,7 +143,7 @@ function json (options) {
   
   
   return function jsonParser (req, res, next) {
-    // 判断请求体是不是已经被解析
+    // 判断请求体是不是已经被解析，如果被解析了，进入下一个中间件
     if (req._body) {
       debug('body already parsed')
       next()
@@ -153,7 +153,7 @@ function json (options) {
     req.body = req.body || {}
 
     // skip requests without bodies
-    //跳过没有主体的请求
+    //跳过没有主体的请求，如果没有主体的请求，则进入下一个中间件
     if (!typeis.hasBody(req)) {
       debug('skip empty body')
       next()
@@ -163,6 +163,7 @@ function json (options) {
     debug('content-type %j', req.headers['content-type'])
 
     // determine if request should be parsed
+    //确认 请求是否应该被解析，如果不应该被解析则跳入下一个中间件
     if (!shouldParse(req)) {
       debug('skip parsing')
       next()
@@ -172,7 +173,7 @@ function json (options) {
     // assert charset per RFC 7159 sec 8.1
     // 断言字符编码,默认字符编码为utf-8
     var charset = getCharset(req) || 'utf-8'
-    //如果字符编码前四位不是utf-，则输出无效字符编码的调试信息
+    //如果字符编码前四位不是utf-，则输出无效字符编码的调试信息，并进入一个创建错误流的中间件
     if (charset.substr(0, 4) !== 'utf-') {
       debug('invalid charset')
       next(createError(415, 'unsupported charset "' + charset.toUpperCase() + '"', {
@@ -196,9 +197,9 @@ function json (options) {
 /**
  * Create strict violation syntax error matching native error.
  *
- * @param {string} str
- * @param {string} char
- * @return {Error}
+ * @param {string} str  string类型参数str
+ * @param {string} char  string类型参数char
+ * @return {Error}      返回一个错误
  * @private
  */
 
@@ -223,26 +224,25 @@ function createStrictSyntaxError (str, char) {
 }
 
 /**
- * Get the first non-whitespace character in a string.
+ * Get the first non-whitespace character in a string.   获取字符串中的第一个非空字
  *
- * @param {string} str
- * @return {function}
+ * @param {string} str  参数为string类型的str
+ * @return {function}   返回一个函数
  * @private
  */
 
-// 获取字符串中的第一个非空字符
+
 function firstchar (str) {
   return FIRST_CHAR_REGEXP.exec(str)[1]
 }
 
 /**
- * Get the charset of a request.
+ * Get the charset of a request. 获取请求体的字符编码，如果出现异常，返回undefined
  *
- * @param {object} req
- * @api private
+ * @param {object} req   参数为对象类型的req
+ * @api private           
  */
 
-// 获取请求体的字符编码，如果出现异常，返回undefined
 function getCharset (req) {
   try {
     return (contentType.parse(req).parameters.charset || '').toLowerCase()
@@ -252,14 +252,14 @@ function getCharset (req) {
 }
 
 /**
- * Normalize a SyntaxError for JSON.parse.
+ * Normalize a SyntaxError for JSON.parse. 为JSON.parse定义一个规范化的语法错误
  *
- * @param {SyntaxError} error
- * @param {object} obj
- * @return {SyntaxError}
+ * @param {SyntaxError} error       语法错误参数  
+ * @param {object} obj     对象参数obj
+ * @return {SyntaxError}   返回一个语法错误
  */
 
-//为JSON.parse定义一个规范化的语法错误
+
 function normalizeJsonSyntaxError (error, obj) {
   var keys = Object.getOwnPropertyNames(error)
 
@@ -281,12 +281,12 @@ function normalizeJsonSyntaxError (error, obj) {
 }
 
 /**
- * Get the simple type checker.
+ * Get the simple type checker. 定义用于查找MIMI类型的函数
  *
- * @param {string} type
- * @return {function}
+ * @param {string} type    参数类型string
+ * @return {function}       返回一个函数
  */
-//定义用于查找MIMI类型的函数
+
 function typeChecker (type) {
   return function checkType (req) {
     return Boolean(typeis(req, type))
