@@ -10,7 +10,7 @@
 
 ### Node.js 原生HTTP模块中，是将用户请求数据封装到了用于请求对象req中，该对象是一个IncomingMessage，该对象同时也是一个可读流对象。在原生HTTP服务器，或不依赖第三方解析模块时，可以像下面这样接收并解析请求体：
 
-` const http = require('http');
+``` const http = require('http');
 
 //用http模块创建一个http服务端 
 http.createServer(function(req, res) {
@@ -40,7 +40,7 @@ http.createServer(function(req, res) {
   } else {
     res.end('其它提交方式');
   }
-}).listen(3000);  `
+}).listen(3000);  ```
 
 # 1.3 使用body-parser解析请求体(在最新版本中body-parser模块已经不和express,connect模块绑定在一块了，需要单独引入模块)
 
