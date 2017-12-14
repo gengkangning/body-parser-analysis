@@ -51,6 +51,77 @@ http.createServer(function(req, res) {
 ### 1.3.1 Express/Connect 项层处理
 
 * Express框架默认使用body-parser做为请求体解析中间件，创建Express项目后，可以在app.js文件中看到如下代码：
+```
+/* 引入依赖项 */
+var express = require('express');
+// ……
+var bodyParser = require('body-parser');
+
+var routes = require('./routes/index');
+var users = require('./routes/users');
+
+var app = express();
+
+// ……
+
+// 解析 application/json
+app.use(bodyParser.json());	
+// 解析 application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded());
+```
+
+* 这样就在项目的Application级别，引入了body-parser模块处理请求体。在上述代码中，模块会处理application/x-www-form-urlencoded、application/json两种内容格式的请求体。经过这个中间件处理后，就可以在所有路由处理器的req.body中访问请求参数。
+
+
+### 1.3.2 解析Express具体路由 
+
+* 在实际应用中，不同路径（路由）可能会要求用户使用不同的内容类型，body-parser还支持为单个Express路由添加请求体解析：
+```
+var express = require('express')
+var bodyParser = require('body-parser')
+
+var app = express()
+
+// 创建 application/json 解析
+var jsonParser = bodyParser.json()
+
+// 创建 application/x-www-form-urlencoded 解析
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
+// POST /login 获取 URL编码的请求体
+app.post('/login', urlencodedParser, function (req, res) {
+  if (!req.body) return res.sendStatus(400)
+  res.send('welcome, ' + req.body.username)
+})
+
+// POST /api/users 获取 JSON 编码的请求体
+app.post('/api/users', jsonParser, function (req, res) {
+  if (!req.body) return res.sendStatus(400)
+  // create user in req.body
+})
+```
+
+### 1.3.3指定请求类型
+* body-parser还支持为某一种或一类内容类型的请求体指定解析方式，指定时可以通过在解析方法中添加type参数修改指定Content-Type的解析方式。
+* 如，可以对text/plain内容类型使用JSON解析：
+```
+app.use(bodyParser.json({ type: 'text/plain' }))
+```
+
+# 2.body-parser模块的API
+
+* 通过npm install body-parser命令安装模块后，可以通过以下方式获取模块引用：
+```
+var bodyParser = require('body-parser')
+```
+* bodyParser变量是对中间件的引用。请求体解析后，解析值都会被放到req.body属性，内容为空时是一个{}空对象。
+
+* bodyParser.json() - 解析JSON格式
+```
+bodyParser.json(options)
+```
+
+[json](https://github.com/gengkangning/body-parser-analysis/blob/master/lib/types/json.js)  
 
 # body-parser主要做了什么
 * 处理不同类型的请求体：比如text、json、urlencoded等，对应的报文主体的格式不同。
