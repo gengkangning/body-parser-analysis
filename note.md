@@ -120,7 +120,7 @@ var bodyParser = require('body-parser')
 ```
 bodyParser.json(options)
 ```
-
+[index](https://github.com/gengkangning/body-parser-analysis/blob/master/index.js)  
 [json](https://github.com/gengkangning/body-parser-analysis/blob/master/lib/types/json.js)  
 
 # body-parser主要做了什么
